@@ -1,14 +1,19 @@
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 const productService = require('../services/product_service');
 
+const FakeStoreRepository = require("../repositories/fake_store_repostitories");
+
+const productServicewithFakeStoreRepo = new productService(new FakeStoreRepository);
+
 function productController (req,res)  {
     return res.json({message:'product ok'});
 }
 
-function createProduct (req,res){
+async function createProduct (req,res){
     try {
 
-        const response = productService.createProduct(req.body);
+        const response = await productServicewithFakeStoreRepo.createProduct(req.body);
+        
         return res.status(StatusCodes.CREATED).json({
             success:true,
             error : {},
@@ -16,12 +21,12 @@ function createProduct (req,res){
             data : response
         });
     } catch (error) {
-        console.log("something went wrong");
+        console.log("something went wrong",error);
     }
 }
-function getProducts(req,res){
+async function getProducts(req,res){
     try {
-        const response = productService.getAllProducts();
+        const response = await productServicewithFakeStoreRepo.getAllProducts();
         return res.status(StatusCodes.OK).json({
             success:true,
             error : {},
@@ -29,13 +34,13 @@ function getProducts(req,res){
             data:response
         });
     } catch (error) {
-        console.log("something went wrong");
+        console.log("something went wrong",error);
     }
 }
-function getProductById(req,res){
+async function getProductById(req,res){
     try {
 
-        const response = productService.getProduct(req.params.id);
+        const response = await productServicewithFakeStoreRepo.getProduct(req.params.id);
         return res.status(StatusCodes.OK).json({
             success:true,
             error : {},
@@ -43,7 +48,7 @@ function getProductById(req,res){
             data:response
         });
     } catch (error) {
-        console.log("something went wrong");
+        console.log("something went wrong",error);
     }
 }
 

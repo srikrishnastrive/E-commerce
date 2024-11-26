@@ -1,25 +1,39 @@
 const  products = [];
+const FakeStoreRepository = require('../repositories/fake_store_repostitories');
 
-function createProduct(product){
-    const newProduct = {
-        id : products.length,
-        ...product
+const fakeRepostitory = new FakeStoreRepository();
+
+class productService{
+    constructor(repostitory){
+        this.repostitory = repostitory
     }
-    products.push(newProduct);
-    return newProduct;
-}
+    async createProduct(product){
+        const response = await fakeRepostitory.createProduct(product);
+        return response.data;
 
-function getAllProducts(){
-    return products;
-}
-function getProduct(id){
-    const product = products.filter(product => product.id == id);
-    return product;
-}
-
-module.exports = {
-    createProduct,
-    getAllProducts,
-    getProduct
+        // const newProduct = {
+        //     id : products.length,
+        //     ...product
+        // }
+        // products.push(newProduct);
+        // return newProduct;
+    }
     
+    async  getAllProducts(){
+        const response = await fakeRepostitory.getProducts();
+        return response.data;
+        //return products;
+    }
+
+   async getProduct(id){
+        // const product = products.filter(product => product.id == id);
+        const product = await fakeRepostitory.getProduct(id);
+        return product.data;
+    }
+
+   
+
 }
+
+
+module.exports = productService
