@@ -2,6 +2,7 @@
 const CategoryService = require('../services/category_service');
 const CategoryRepository = require('../repositories/category_repostiory');
 const { StatusCodes, ReasonPhrases } = require('http-status-codes');
+const { errorResponse } = require('../utils/error_response');
 
 const categoryServicer = new CategoryService(new CategoryRepository());
 
@@ -16,7 +17,9 @@ async function createCategory(req,res){
             data:response
         })
     } catch (error) {
+        console.log(error);
         console.log("CategoryController : something went wrong controller",error);
+        return res.status(error.statusCode).json(errorResponse(error.reason,error));
         
     }
 }
@@ -31,6 +34,7 @@ async function getAllCategories(req,res){
         })
     } catch (error) {
         console.log("CategoryController : something went wrong controller",error);
+        return res.status(error.statusCode).json(errorResponse(error.reason,error));
     }
 }
 async function getCategory(req,res){
@@ -45,6 +49,7 @@ async function getCategory(req,res){
 
     } catch (error) {
         console.log("CategoryController : something went wrong controller",error);
+        return res.status(error.statusCode).json(errorResponse(error.reason,error));
     }
 }
 
@@ -59,6 +64,7 @@ async function destroyCategoryById(req,res) {
         })
     } catch (error) {
         console.log("CategoryController : something went wrong controller",error);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse(error.reason,error));
     }
 }
 module.exports = {
