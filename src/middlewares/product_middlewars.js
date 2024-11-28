@@ -15,7 +15,7 @@ function createProductValidator(req,res,next){
     if (!req.body.description){
         return res.status(StatusCodes.BAD_REQUEST).json(errorResponse(ReasonPhrases.BAD_REQUEST,new BadRequest("Description")));
     }
-    if (!req.body.category){
+    if (!req.body.categoryId){
         return res.status(StatusCodes.BAD_REQUEST).json(errorResponse(ReasonPhrases.BAD_REQUEST,new BadRequest("Category")));
     }
     next();

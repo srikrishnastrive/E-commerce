@@ -1,39 +1,39 @@
-const {Category} = require('../models/index');
+const {Product} = require('../models/index');
 
 
-class CategoryRepository {
-     async createCategory(name,description){
+class ProductRepository {
+     async createProduct(title,description,price,image,categoryId){
         try {
-            const response = await Category.create({name,description});
+            const response = await Product.create({title,description,price,image,categoryId});
             return response;
         } catch (error) {
             console.log(error,"something went wrong repo");
             throw error;
         }
     }
-    async getAllCategories(){
+    async getAllProducts(){
         try {
-            const response = await Category.findAll();
+            const response = await Product.findAll();
             return response;
         } catch (error) {
             console.log(error,"Something went wrong");
             throw error;
         }
     }
-    async getCategoryById(categoryId){
+    async getProductById(productId){
         try {
-            const response = await Category.findByPk(categoryId);
+            const response = await Product.findByPk(productId);
             return response;
         } catch (error) {
             console.log(error,"Something went wrong");
             throw error;
         }
     }
-    async destroyCategoryById(categoryId){
+    async destroyProductId(productId){
         try {
-            const response = await Category.destroy({
+            const response = await Product.destroy({
                 where : {
-                    id : categoryId
+                    id : productId
                 }
             });
             return response;
@@ -44,4 +44,4 @@ class CategoryRepository {
     }
 }
 
-module.exports = CategoryRepository;
+module.exports = ProductRepository;

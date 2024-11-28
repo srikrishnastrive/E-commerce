@@ -6,7 +6,7 @@ const Category = require('./category');
 
 const Product = db.define('product', {
     title: {
-        title: Sequelize.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
        
     },
