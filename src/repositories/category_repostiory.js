@@ -42,6 +42,16 @@ class CategoryRepository {
             throw error;
         }
     }
+    // async getProductsForCategory(categoryId){
+    //     try {
+    //         const category = await Category.findByPk(categoryId);
+    //         const productsByCategory = await category.getProducts();
+    //         return productsByCategory;
+    //     } catch (error) {
+    //         console.log(error,"Something went wrong");
+    //         throw error;
+    //     }
+    // }
 }
 
 module.exports = CategoryRepository;

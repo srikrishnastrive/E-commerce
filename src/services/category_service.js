@@ -1,11 +1,32 @@
-const { text } = require("body-parser");
+
 const InternalServerError = require("../errors/internal_server_error");
 const NotFoundError = require('../errors/not_found_error');
 
 
+
 class CategoryService{
-    constructor(repository){
+    constructor(repository,produtRepository){
         this.repository = repository;
+        this.produtRepository = produtRepository;
+    }
+
+    async getProductsForCategory(categoryId){
+        try {
+            await this.getCategoryById(categoryId);
+            const response = await this.produtRepository.getProductsForCategory(categoryId);
+            if (!response){
+                console.log("CategoryService",categoryId,"not found");
+                throw new NotFoundError("CategoryService",categoryId,"not found");
+            }
+            return response
+        } catch (error) {
+            if(error.name === "NotFoundError") {
+                throw error;
+            }
+            console.log("CategorySerice: ",error);
+            throw new InternalServerError();
+        }
+        
     }
 
     async createCategory(category){
@@ -33,7 +54,7 @@ class CategoryService{
             const response = await this.repository.getCategoryById(categoryId);
             if (!response){
                 console.log("CategoryService",categoryId,"not found");
-                throw new NotFoundError();
+                throw new NotFoundError("Category", "id", categoryId);
             }
             return response;
         } catch (error) {
@@ -58,6 +79,7 @@ class CategoryService{
             throw new InternalServerError();
         }
     }
+    
 }
 
 module.exports = CategoryService;
