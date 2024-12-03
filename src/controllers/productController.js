@@ -73,10 +73,36 @@ async function removeProduct(req,res) {
         return res.status(error.statusCode).json(errorResponse(error.reason,error));
     }  
 }
+async function searchProducts(req, res) {
+    try {
+        const { searchName } = req.body;
+        if (!searchName || typeof searchName !== "string") {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                error: { message: "searchName must be a valid string" },
+                message: ReasonPhrases.BAD_REQUEST,
+                data: null
+            });
+        }
+
+        const response = await productService.searchProducts(searchName);
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            error: {},
+            message: ReasonPhrases.OK,
+            data: response
+        });
+    } catch (error) {
+        console.log("ProductController: something went wrong in searchProducts", error);
+        return res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json(errorResponse(error.reason, error));
+    }
+}
+
 
 module.exports = {
     createProduct,
     getProducts,
     getProductById,
-    removeProduct
+    removeProduct,
+    searchProducts
 }

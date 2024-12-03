@@ -30,7 +30,10 @@ class productService{
             if (query.max_price && isNaN(query.max_price)){
                 throw new BadRequest("maximum price",true);
             }
-            const response = await this.repostitory.getAllProducts(+query.limit,+query.offset,+query.min_price,+query.max_price);
+            if (query.brand && typeof query.brand != 'string'){
+                throw new BadRequest("brand",true);
+            }
+            const response = await this.repostitory.getAllProducts(+query.limit,+query.offset,+query.min_price,+query.max_price,query.brand);
             return response;
         } catch (error) {
             if (error.name == "BadRequest"){
@@ -75,6 +78,28 @@ class productService{
             console.log(error,"something went wrong product service");
             throw new InternalServerError();
         }
+    }
+
+    async searchProducts(searchName){
+        try {
+            if (!searchName || typeof searchName != 'string'){
+                throw new BadRequest("SeachName must be a valid String");
+            }
+            const response = await this.repostitory.searchProducts(searchName);
+            if (response.length == 0){
+                console.log("No products found for search term:", searchName);
+                 throw new NotFoundError(`No products found for "${searchName}"`);
+            }
+            return response;
+        } catch (error) {
+            if (error.name === "BadRequest" || error.name === "NotFoundError") {
+                throw error;
+            }
+            console.log(error, "Something went wrong in ProductService");
+            throw new InternalServerError();
+        }
+        
+
     }
 
     
