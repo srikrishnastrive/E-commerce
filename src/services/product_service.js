@@ -1,5 +1,6 @@
 
 
+const { BadRequest } = require("../errors/bad_request_errors");
 const InternalServerError = require("../errors/internal_server_error");
 const NotFoundError = require('../errors/not_found_error');
 
@@ -18,11 +19,23 @@ class productService{
         
     }
     
-    async  getAllProducts(){
+    async  getAllProducts(query){
         try {
-            const response = await this.repostitory.getAllProducts();
+            if ((query.limit && isNaN(query.limit)) || (query.offset && isNaN(query.offset))){
+                throw new BadRequest("limit,offset",true);
+            }
+            if (query.min_price && isNaN(query.min_price)){
+                throw new BadRequest("minimum price",true);
+            }
+            if (query.max_price && isNaN(query.max_price)){
+                throw new BadRequest("maximum price",true);
+            }
+            const response = await this.repostitory.getAllProducts(+query.limit,+query.offset,+query.min_price,+query.max_price);
             return response;
         } catch (error) {
+            if (error.name == "BadRequest"){
+                throw error;
+            }
             console.log(error,"something went wrong product service");
             throw new InternalServerError();
         }

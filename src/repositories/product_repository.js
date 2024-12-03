@@ -1,5 +1,5 @@
 const {Product} = require('../models/index');
-
+const {Op, INTEGER, NUMBER} = require('sequelize');
 
 class ProductRepository {
      async createProduct(title,description,price,image,categoryId){
@@ -11,10 +11,30 @@ class ProductRepository {
             throw error;
         }
     }
-    async getAllProducts(){
+    async getAllProducts(offset,limit,min_price,max_price){
         try {
-            const response = await Product.findAll();
+            const query = {};
+            if (offset){
+                query.offset = offset;
+            }
+            if (limit){
+                query.limit = limit;
+            }
+            const minValue = (min_price) ? min_price : Number.MIN_SAFE_INTEGER;
+            const maxValue = (max_price) ? max_price : Number.MAX_SAFE_INTEGER;
+            const response = Product.findAll({
+                where :{
+                    price : {
+                        [Op.between] : [minValue,maxValue]
+                    }
+                },
+                ...query
+            });
             return response;
+            
+               
+            
+           
         } catch (error) {
             console.log(error,"Something went wrong");
             throw error;

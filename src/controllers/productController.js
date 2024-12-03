@@ -29,7 +29,7 @@ async function createProduct (req,res){
 }
 async function getProducts(req,res){
     try {
-        const response = await productService.getAllProducts();
+        const response = await productService.getAllProducts(req.query);
         return res.status(StatusCodes.OK).json({
             success:true,
             error : {},
