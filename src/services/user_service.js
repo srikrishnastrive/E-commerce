@@ -1,10 +1,12 @@
 
 
-const { ValidationErrorItem } = require("sequelize");
+
 const { BadRequest } = require("../errors/bad_request_errors");
 const ConflictError = require("../errors/conflict_error");
 const InternalServerError = require("../errors/internal_server_error");
 const NotFoundError = require('../errors/not_found_error');
+const bcrypt = require('bcrypt');
+const UnauthorizedError = require("../errors/unauthorized_error");
 
 class UserService{
     constructor(repostitory){
@@ -64,8 +66,34 @@ class UserService{
         console.log(error,"something went wrong User service");
         throw new InternalServerError();
     }
+
+   
                 
     }
+
+    async signInUser(email,plainPassword){
+        try {
+            const user = await this.repostitory.getUserbyEmail(email);
+            if (!user){
+                console.log("UserService",email,"not found");
+                throw new NotFoundError("user","email",email);
+            }
+            let hash = user.password;
+            const passwordIsValid = bcrypt.compareSync(plainPassword,user.password);
+            if (!passwordIsValid){
+                throw new UnauthorizedError()
+            }
+            return passwordIsValid; 
+        } catch (error) {
+            if (error.name == "NotFoundError" || error.name == "UnauthorizedError"){
+                throw error;
+            }
+            console.log(error,"something went wrong User service");
+            throw new InternalServerError();
+        }
+        
+    }
+
     async destroyUserId(userId){
         try {
            const response = await this.repostitory.destroyUser(userId);

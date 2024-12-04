@@ -22,6 +22,19 @@ class UserRepository {
             throw error;
         }
     }
+    async getUserbyEmail(email){
+        try {
+            const response = User.findOne({
+                where :{
+                    email : email
+                }
+            });
+            return response;
+        } catch (error) {
+            console.log(error,"Something went wrong");
+            throw error;
+        }
+    }
     async getUserById(userId){
         try {
             const response = await User.findByPk(userId);

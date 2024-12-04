@@ -1,6 +1,8 @@
 const Sequelize = require('sequelize');
 const db = require('../config/db_config');
+const {SALT_ROUNDS} = require('../config/serverConfig');
 
+const bcrypt = require('bcrypt');
 
 
 const User = db.define('user', {
@@ -22,7 +24,15 @@ const User = db.define('user', {
         }
         
     }
-});
+},{
+    hooks : {
+        beforeCreate : function(user){
+            const salt = bcrypt.genSaltSync(+SALT_ROUNDS)
+            user.password = bcrypt.hashSync(user.password,salt);
+        }
+    }
+}
+);
 
 module.exports = User;
 

@@ -27,6 +27,23 @@ async function createUser (req,res){
        
     }
 }
+async function signInUser(req,res){
+    try {
+        const {email,password} = req.body;
+        const response = await userService.signInUser(email,password);
+        
+        return res.status(StatusCodes.OK).json({
+            success:true,
+            error : {},
+            message:"Successfully Sign In",
+            data : response
+        });
+    } catch (error) {
+        console.log(error);
+        console.log("UserController : something went wrong controller",error);
+        return res.status(error.statusCode).json(errorResponse(error.reason,error));
+    }
+}
 async function getUsers(req,res){
     try {
         const response = await userService.getAllUsers();
@@ -80,5 +97,6 @@ module.exports = {
     getUsers,
     getUserById,
     removeUser,
+    signInUser
    
 }
