@@ -1,9 +1,9 @@
 const express = require('express');
 
-const productRouter = require('./productRouter');
-const pingRouter = require('./pingRoutesv1');
+const productRouter = require('./product_router');
+const pingRouter = require('./ping_router');
 const categoryRouter = require('./category_router');
-const userRouter = require('./userRouter')
+const userRouter = require('./user_router')
 const v1Router = express.Router();
 
 v1Router.use('/ping',pingRouter);

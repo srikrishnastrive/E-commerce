@@ -2,10 +2,9 @@ const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 const UserService = require('../services/user_service');
 const UserRepository = require('../repositories/user_repository');
 const { errorResponse } = require("../utils/error_response");
-
-
-
+const { NODE_ENV } = require("../config/serverConfig");
 const userService = new UserService(new UserRepository());
+const cookieParser = require('cookie-parser');
 
 
 
@@ -31,12 +30,15 @@ async function signInUser(req,res){
     try {
         const {email,password} = req.body;
         const response = await userService.signInUser(email,password);
-        
+        res.cookie('token',response,{httpOnly:true,
+            maxAge:7 * 24 * 60 * 60 * 1000,secure : NODE_ENV === "production" ? true : false,
+        });
+        //secure-true //https 
         return res.status(StatusCodes.OK).json({
             success:true,
             error : {},
             message:"Successfully Sign In",
-            data : response
+            data : (NODE_ENV === 'production') ? true : response
         });
     } catch (error) {
         console.log(error);

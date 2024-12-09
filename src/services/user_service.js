@@ -7,6 +7,7 @@ const InternalServerError = require("../errors/internal_server_error");
 const NotFoundError = require('../errors/not_found_error');
 const bcrypt = require('bcrypt');
 const UnauthorizedError = require("../errors/unauthorized_error");
+const { generateJWT } = require("../utils/auth");
 
 class UserService{
     constructor(repostitory){
@@ -78,12 +79,15 @@ class UserService{
                 console.log("UserService",email,"not found");
                 throw new NotFoundError("user","email",email);
             }
-            let hash = user.password;
+
             const passwordIsValid = bcrypt.compareSync(plainPassword,user.password);
             if (!passwordIsValid){
                 throw new UnauthorizedError()
             }
-            return passwordIsValid; 
+            //to manage session and after signin we are using jwt
+            const result = generateJWT({email:user.email,id:user.id});
+            return result;
+            
         } catch (error) {
             if (error.name == "NotFoundError" || error.name == "UnauthorizedError"){
                 throw error;

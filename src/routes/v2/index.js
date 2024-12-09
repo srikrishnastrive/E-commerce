@@ -1,7 +1,7 @@
 const express = require('express');
 
-const productRouter = require('./productRouter');
-const pingRouter = require('./pingRoutesv2');
+const productRouter = require('./product_router');
+const pingRouter = require('./product_router');
 const v2Router = express.Router();
 
 v2Router.use('/ping',pingRouter);

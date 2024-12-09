@@ -5,14 +5,14 @@ const apiRouter = require('./routes/apiRouter');
 const bodyParser = require('body-parser');
 const responseTime = require('response-time');
 const db = require('./config/db_config');
-const {Category} = require('./models');
-
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(responseTime());
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(cookieParser())
 
 app.use('/api',apiRouter);
 
